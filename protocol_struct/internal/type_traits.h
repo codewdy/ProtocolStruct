@@ -65,8 +65,13 @@ struct ForEach;
 
 template <typename Tlhs, typename Trhs, typename Top>
 struct ForEach<TypeList<Tlhs, Trhs>, Top> {
+#if __cplusplus >= 201703L
+  using T = TypeList<typename ForEach<Tlhs, Top>::T,
+                     typename std::invoke_result<Top, Trhs>::type>;
+#else
   using T = TypeList<typename ForEach<Tlhs, Top>::T,
                      typename std::result_of<Top(Trhs)>::type>;
+#endif
 };
 
 template <typename Top>
